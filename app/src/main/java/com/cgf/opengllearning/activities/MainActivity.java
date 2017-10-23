@@ -1,13 +1,11 @@
 package com.cgf.opengllearning.activities;
 
 import android.opengl.GLSurfaceView;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
 
 import com.cgf.opengllearning.R;
 import com.cgf.opengllearning.base.BaseActivity;
-import com.cgf.opengllearning.renderer.MyFirstRenderer;
 
 public class MainActivity extends BaseActivity {
     private GLSurfaceView glSurfaceView;
@@ -36,7 +34,6 @@ public class MainActivity extends BaseActivity {
 
     private void initGLSurfaceView() {
         glSurfaceView = (GLSurfaceView) findViewById(R.id.gl_surface_view);
-        glSurfaceView.setRenderer(new MyFirstRenderer());
     }
 
     @Override
