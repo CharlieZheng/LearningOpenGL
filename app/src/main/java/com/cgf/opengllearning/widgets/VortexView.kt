@@ -9,11 +9,11 @@ import com.cgf.opengllearning.renderer.VortexRenderer
 /**
  * @author zhenghanrong on 2017/10/23.
  */
-class VortexView : GLSurfaceView
-{
+class VortexView : GLSurfaceView {
     constructor(context: Context?) : super(context) {
         init(context)
     }
+
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs) {
         init(context)
     }
@@ -22,10 +22,12 @@ class VortexView : GLSurfaceView
         _renderer = VortexRenderer()
         setRenderer(_renderer)
     }
+
     private var _renderer: VortexRenderer? = null
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         queueEvent({
-            _renderer?.setColor(event?.x?:0f / width, event?.y?:0f / height, 1f)
+            _renderer?.setColor((event?.x ?: 0f )/ measuredWidth,( event?.y ?: 0f) / measuredHeight, 1f)
+            _renderer?.setAngle(event?.x ?: 0f / 10)
         })
         return true
     }
