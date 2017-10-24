@@ -10,6 +10,8 @@ import com.cgf.opengllearning.renderer.VortexRenderer
  * @author zhenghanrong on 2017/10/23.
  */
 class VortexView : GLSurfaceView {
+    private var _x = 0f
+    private var _y = 0f
     constructor(context: Context?) : super(context) {
         init(context)
     }
@@ -25,10 +27,20 @@ class VortexView : GLSurfaceView {
 
     private var _renderer: VortexRenderer? = null
     override fun onTouchEvent(event: MotionEvent?): Boolean {
-        queueEvent({
-            _renderer?.setColor((event?.x ?: 0f )/ measuredWidth,( event?.y ?: 0f) / measuredHeight, 1f)
-            _renderer?.setAngle(event?.x ?: 0f / 10)
-        })
+        if (event?.action == MotionEvent.ACTION_DOWN) {
+            _x = event?.x?:0f
+            _y = event?.y?:0f
+        }
+        if (event?.action == MotionEvent.ACTION_MOVE) {
+            val xdiff :Float= _x - (event?.x?:0f)
+            val ydiff :Float= _y - (event?.y?:0f)
+            queueEvent({
+                _renderer?._xAngle = (_renderer?._xAngle?:0f) +ydiff
+                _renderer?._yAngle = (_renderer?._yAngle?:0f) + xdiff
+            })
+            _x = event?.x?:0f
+            _y = event?.y?:0f
+        }
         return true
     }
 }
