@@ -20,27 +20,48 @@ class VortexRenderer : GLSurfaceView.Renderer {
     private var _nrOfVertices = 0 // 顶点数
     var _xAngle = 0f
     var _yAngle = 0f
+    private var _width = 320f
+    private var _height = 480f
     override fun onDrawFrame(gl: GL10?) {
-        gl?.glClearColor(0f, 0f, 0f, 1f)
         gl?.glLoadIdentity() // 重置矩阵，这会重设三角形的角度以便其总是可以旋转到给定的角度。
         // 为了让颜色变化可见，我们必须调用glClear()以及颜色缓冲的Mask来清空buffer，然后为我们的底色使用新的底色。
-        gl?.glClear(GL10.GL_COLOR_BUFFER_BIT)
-        gl?.glRotatef(_xAngle, 1f, 0f, 0f)
-        gl?.glRotatef(_yAngle, 0f, 1f, 0f)
-        // gl?.glColor4f(0.5f, 0f, 0f, 0.5f) // 设置三角形为暗红色
+        gl?.glClear(GL10.GL_COLOR_BUFFER_BIT or GL10.GL_DEPTH_BUFFER_BIT)
+
+        gl?.glVertexPointer(3, GL10.GL_FLOAT, 0, _vertexBuffer)
+        gl?.glColorPointer(4, GL10.GL_FLOAT, 0, _colorBuffer)
+
+        for (i in 1..10) {
+            gl?.glLoadIdentity()
+            gl?.glTranslatef(0f, -1f, -1f - 1.5f * i)
+            gl?.glRotatef(_xAngle, 1f, 0f, 0f)
+            gl?.glRotatef(_yAngle, 0f, 1f, 0f)
+            // 第一个参数定义了什么样的图元将被画出来。第二个参数定义有多少个元素，第三个是indices使用的数据类型。最后一个是绘制顶点使用的索引缓冲。
+            gl?.glDrawElements(GL10.GL_TRIANGLES, _nrOfVertices, GL10.GL_UNSIGNED_SHORT, _indexBuffer)
+        }
+        /*// gl?.glColor4f(0.5f, 0f, 0f, 0.5f) // 设置三角形为暗红色
         // 初始化Vertex Pointer
         // 第一个参数是大小，也是顶点的维数。我们使用的是x,y,z三维坐标。第二个参数，GL_FLOAT定义buffer中使用的数据类型。第三个变量是0，是因为我们的坐标是在数组中紧凑的排列的，没有使用offset。最后哦胡第四个参数顶点缓冲。
         gl?.glVertexPointer(3, GL10.GL_FLOAT, 0, _vertexBuffer)
-        gl?.glColorPointer(4, GL10.GL_FLOAT, 0, _colorBuffer)
-        // 第一个参数定义了什么样的图元将被画出来。第二个参数定义有多少个元素，第三个是indices使用的数据类型。最后一个是绘制顶点使用的索引缓冲。
-        gl?.glDrawElements(GL10.GL_TRIANGLES, _nrOfVertices, GL10.GL_UNSIGNED_SHORT, _indexBuffer)
+        gl?.glColorPointer(4, GL10.GL_FLOAT, 0, _colorBuffer)*/
     }
 
     override fun onSurfaceChanged(gl: GL10?, width: Int, height: Int) {
+        _width = width.toFloat()
+        _height = height.toFloat()
         gl?.glViewport(0, 0, width, height)
     }
 
     override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
+        gl?.glMatrixMode(GL10.GL_PROJECTION)
+        val size = 0.01f * Math.tan(Math.toRadians(45.toDouble()) / 2f).toFloat()
+        val ratio = _width / _height
+        gl?.glFrustumf(-size, size, -size / ratio, size / ratio, 0.01f, 100f)
+//        gl?.glOrthof(-1f, 1f, -1/ratio, 1/ratio, 0.01f, 100f)
+        gl?.glViewport(0, 0, _width.toInt(), _height.toInt())
+        gl?.glMatrixMode(GL10.GL_MODELVIEW)
+        gl?.glEnable(GL10.GL_DEPTH_TEST)
+
+        gl?.glClearColor(0f, 0f, 0f, 1f)
         gl?.glEnable(GL10.GL_CULL_FACE) // 只有一面可见
         gl?.glFrontFace(GL10.GL_CCW) // 定义哪种顺序来分正反（背）面
         gl?.glCullFace(GL10.GL_BACK) // 设置不可见的那面为反（背）面
