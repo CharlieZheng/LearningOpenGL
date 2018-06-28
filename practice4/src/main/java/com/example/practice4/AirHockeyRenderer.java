@@ -1,5 +1,6 @@
 package com.example.practice4;
 
+import android.content.Context;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 
@@ -28,7 +29,8 @@ public class AirHockeyRenderer implements GLSurfaceView.Renderer {
             4.5f, 2f,
             4.5f, 12f
     };
-    public AirHockeyRenderer() {
+    public AirHockeyRenderer(Context context) {
+        this.context = context;
         float[] tableVertices = {
           0f,0f,
           0f,14f,
@@ -42,10 +44,12 @@ public class AirHockeyRenderer implements GLSurfaceView.Renderer {
     }
     private  static  final  int BYTES_PER_FLOAT = 4;
     private  final FloatBuffer vertexData;
-
+    private final Context context;
     @Override
     public void onSurfaceCreated(GL10 gl10, EGLConfig eglConfig) {
         GLES20.glClearColor(1f, 0f, 0f, 0f); // rgba
+        String vertexShaderSource = TextResourceReader.readTextFileFromResource(context, R.raw.simple_fragment_shader);
+        String fragmentShaderSource = TextResourceReader.readTextFileFromResource(context, R.raw.simple_fragment_shader);
     }
 
     @Override
